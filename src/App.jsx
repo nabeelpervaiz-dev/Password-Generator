@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import './App.css'
 
@@ -7,13 +7,15 @@ function App() {
   const [NumberAllowed, setNumberAllowed] = useState(false) // numbers allow or not 
   const [CharAllowed, setCharAllowed] = useState(false)// numbers allow or not
   const [password, setpassword] = useState("")
+/// ref hook 
+const passwordRef=useRef(null)
 
   /// creating a function that will help use to genertate password 
 
 
   // usecallback : help to cache a function defination between re-renders
   // memorization of the code 
- const passwordgenerator= useCallback( 
+ const passwordGenerator= useCallback( 
   ()=>{
   let pass="";
   let str="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
@@ -29,9 +31,24 @@ function App() {
 
   }
   setpassword(pass)
- },[lenght,NumberAllowed,CharAllowed, setpassword])
- 
+ },[lenght,NumberAllowed,CharAllowed , setpassword])
 
+
+
+ useEffect(() => {
+    
+  console.log("firsg render")
+  passwordGenerator();
+ 
+ }, [lenght,NumberAllowed,CharAllowed,passwordGenerator])
+
+ /////// to copy the password here we are using useref..
+// opyimizing copy passwordc
+const copyPassword=useCallback(()=>{
+  passwordRef.current?.select()
+  passwordRef.current?.setSelectionRange(0,8)
+    window.navigator.clipboard.writeText(password)  /// this will copy the complete password from feild
+},[password])
   return (
        <div className='w-full h-screen bg-gray-700 border-2 flex justify-center py-20'>
           <div className="box flex flex-col gap-5">
@@ -39,11 +56,15 @@ function App() {
 
             <div className="feild flex">
               <input className='w-full py-5 bg-white px-4' 
+              ref={passwordRef}
             type="text" 
             placeholder='Password'
             readOnly
+              value={password}
             />
-            <button className='bg-blue-400 font-bold px-5 active:scale-93 cursor-pointer text-white'>Copy</button>
+            <button
+            onClick={copyPassword}
+             className='bg-blue-600 font-bold px-5 active:scale-93 cursor-pointer text-white'>Copy</button>
             </div>
 
             <div className="controls flex flex-col justify-between gap-4 ">
