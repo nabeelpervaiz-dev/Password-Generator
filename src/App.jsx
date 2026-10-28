@@ -41,12 +41,13 @@ const passwordRef=useRef(null)
   passwordGenerator();
  
  }, [lenght,NumberAllowed,CharAllowed,passwordGenerator])
+ // dependencies that f changes the  useefect re- renders the updates 
 
  /////// to copy the password here we are using useref..
 // opyimizing copy passwordc
 const copyPassword=useCallback(()=>{
   passwordRef.current?.select()
-  passwordRef.current?.setSelectionRange(0,8)
+  passwordRef.current?.setSelectionRange(0,99)
     window.navigator.clipboard.writeText(password)  /// this will copy the complete password from feild
 },[password])
   return (
